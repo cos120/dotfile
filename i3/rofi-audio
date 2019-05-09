@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+#!/usr/bin/env bash
+index=$(pactl list cards short | rofi -width 50 -dmenu -i -p select-sink | awk '{print $1}' | tr -d '\r\n')
+pacmd set-default-sink $index
+

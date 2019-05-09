@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+#xrandr --newmode "3840x2160_60.00"  712.75  3840 4160 4576 5312  2160 2163 2168 2237 -hsync +vsync
+#xrandr --addmode eDP-1-1 3840x2160_60.00
+#xrandr --output eDP-1-1 --mode 3840x2160_60.00
+#xrandr --output DP-1-2 --off
+#xrandr --output DP-1-2 --auto
+xrdb ~/.Xresources
+e=$(xrandr -q | awk '/\<connected\>/{print $1}')
+LAPTOP=$(echo ${e} | awk '{print $1}')
+MONITOR=$(echo ${e} | awk '{print $2}')
+if [ ${MONITOR} ];then
+    xrandr --output ${MONITOR} --off
+    sleep 1
+    xrandr --output ${MONITOR} --auto
+    sleep 1
+    if [ ${MONITOR} = 'DP-1-1-1' ];then
+        xrandr --output ${MONITOR} --above ${LAPTOP}
+    fi
+    if [ ${MONITOR} = 'HDMI-1' ];then
+        xrandr --output ${MONITOR} --fb 3840x4320 --mode 1920x1080 --scale 2x2 --pos 0x0 --output ${LAPTOP} --scale 1x1 --pos 0x2160
+    fi
+fi
+xinput --set-prop 'DLL06E4:01 06CB:7A13 Touchpad' 'Coordinate Transformation Matrix' 0.800000, 0.000000, 0.000000, 0.000000, 0.800000, 0.000000, 0.000000, 0.000000, 0.800000
+xinput map-to-output 'ELAN Touchscreen' ${LAPTOP}
+if [ -n $(xinput | awk '/Wacom Bamboo One S Pen stylus/{print $2}') ];then
+    xinput map-to-output 'Wacom Bamboo One S Pen stylus' ${MONITOR}
+fi
+xinput --set-prop 'DLL06E4:01 06CB:7A13 Touchpad' 'Synaptics Palm Detection' 1
+xinput --set-prop 'DLL06E4:01 06CB:7A13 Touchpad' 'Synaptics Palm Dimensions' 1  200
+xinput --set-prop 'DLL06E4:01 06CB:7A13 Touchpad' 'Synaptics Two-Finger Scrolling' 1  1
+xinput --set-prop 'DLL06E4:01 06CB:7A13 Touchpad' 'Synaptics Tap Action' 2  3  0  0  1  2  0
+xinput --set-prop 'DLL06E4:01 06CB:7A13 Touchpad' 'Synaptics Area' 0 0 300 0
+

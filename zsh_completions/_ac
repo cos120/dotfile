@@ -1,0 +1,13 @@
+#compdef ac
+
+_ac(){
+    _alternative \
+        'f:auto complete:__complete_path' \
+}
+
+__complete_path(){
+    local expl
+    files=(`ls -1 /home/zj/envs`)
+    _wanted files expl f compadd $* - $files
+}
+_ac "$@"
